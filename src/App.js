@@ -1,12 +1,13 @@
 import ItemTable from "./ItemTable";
 import { useState, useEffect } from "react";
 
-function App() {
+function App({props}) {
   //add useState for all state variables
 
   const [name, setname] = useState('');
   const [gender, setgender] = useState('');
   const [age, setage] = useState('');
+  const [lists, setlists] = useState([])
 
   // console.log(name)
   const onSubmit = (e) => {
@@ -16,9 +17,8 @@ function App() {
       age
     }
     console.log('pl' , payload);
-    
-    <ItemTable name={name} gender={gender} age={age} />
-
+    setlists([...lists,{name:name,gender:gender,age:age}]);
+    localStorage.setItem("items",JSON.stringify(lists));
   }
   
 
@@ -26,7 +26,7 @@ function App() {
   useEffect(() => {
     const items = localStorage.getItem("items");
     // ...
-    localStorage.setItem('items',JSON.stringify(items))
+    if(items!== null) setname(JSON.parse(items));
   }, []);
 
   return (
@@ -46,7 +46,7 @@ function App() {
 
         <div className="field">
           <label className="label">Gender</label>
-          <select className="input" type="text" placeholder="Please select .." > onChange={(e)=>setgender(e.target.value)}
+          <select className="input" type="text" placeholder="Please select .." onChange={(e)=>setgender(e.target.value)} > 
             <option value="" disabled selected hidden>
               -- Select Gender --
             </option>
@@ -72,7 +72,10 @@ function App() {
         <p className="is-4 title has-text-centered">Person List</p>
         {/* sample table */}
         <ItemTable name={"Bob"} gender={"Male"} age={"50"} />
-        {/* <ItemTable name={name} gender={gender} age={age} /> */}
+        {lists.map((data,i)=>(
+          <ItemTable key={i} name={data.name} gender={data.gender} age={data.age} />
+        ))}
+        
         <p>Kasidej Kammool #620610776</p>
       </div>
     </div>
